@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}{{ record.algorithm }} - {{ record.sequence }} - False Positives/Negatives Database{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 20px;">
+    <a href="{{ url_for('browse') }}" class="btn">← Back to Browse</a>
+</div>
+
+<div class="record-card" style="background-color: white;">
+    <h2>{{ record.algorithm }} Prediction Error</h2>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+        <div>
+            <h3>Sequence Information</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 10px; font-weight: bold;">Peptide Sequence:</td>
+                    <td style="padding: 10px; font-family: monospace; font-size: 1.2em;">{{ record.sequence }}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 10px; font-weight: bold;">HLA Allele:</td>
+                    <td style="padding: 10px;">{{ record.allele }}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 10px; font-weight: bold;">Algorithm:</td>
+                    <td style="padding: 10px;">{{ record.algorithm }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div>
+            <h3>Error Details</h3>
+            <div style="padding: 15px; background-color: {% if record.result_type == 'false_positive' %}#fff3cd{% else %}#f8d7da{% endif %}; border-radius: 5px; margin-bottom: 15px;">
+                <strong>Error Type:</strong>
+                <span style="font-size: 1.1em;">
+                    {% if record.result_type == 'false_positive' %}
+                        🟡 False Positive
+                    {% else %}
+                        🔴 False Negative
+                    {% endif %}
+                </span>
+            </div>
+            
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 10px; font-weight: bold;">Expected Result:</td>
+                    <td style="padding: 10px;">{{ record.expected_result }}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 10px; font-weight: bold;">Algorithm Result:</td>
+                    <td style="padding: 10px;">{{ record.actual_result }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    {% if record.description %}
+        <div style="margin-bottom: 30px;">
+            <h3>Description & Evidence</h3>
+            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; line-height: 1.6;">
+                {{ record.description|replace('\n', '<br>')|safe }}
+            </div>
+        </div>
+    {% endif %}
+    
+    <div style="border-top: 1px solid #ddd; padding-top: 20px; color: #666;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+                <strong>Submitted:</strong> {{ record.submitted[:19]|replace('T', ' ') }}
+                {% if record.approved %}
+                    <br><strong>Approved:</strong> {{ record.approved[:19]|replace('T', ' ') }}
+                {% endif %}
+            </div>
+            <div>
+                <strong>Record ID:</strong> {{ record.id }}
+                <br><strong>Status:</strong> 
+                <span style="color: #27ae60; font-weight: bold;">✓ Approved</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 30px; padding: 15px; background-color: #e8f4fd; border: 1px solid #bee5eb; border-radius: 5px;">
+    <strong>How to Cite:</strong> When referencing this record in publications, please include the Record ID ({{ record.id }}) 
+    and the database URL. This helps ensure reproducibility and proper attribution.
+</div>
+{% endblock %}

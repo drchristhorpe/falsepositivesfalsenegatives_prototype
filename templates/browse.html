@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Records - False Positives/Negatives Database{% endblock %}
+
+{% block content %}
+<h2>Browse Records</h2>
+<p>Search and filter through approved records in the database.</p>
+
+<!-- Search and Filter Form -->
+<div class="filters">
+    <form method="GET">
+        <div class="form-group">
+            <label for="q">Search</label>
+            <input type="text" id="q" name="q" value="{{ current_search }}" placeholder="Search sequences, descriptions...">
+        </div>
+        
+        <div class="form-group">
+            <label for="algorithm">Algorithm</label>
+            <select id="algorithm" name="algorithm">
+                <option value="">All Algorithms</option>
+                {% for algo in algorithms %}
+                    <option value="{{ algo }}" {% if algo == current_algorithm %}selected{% endif %}>{{ algo }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="result_type">Error Type</label>
+            <select id="result_type" name="result_type">
+                <option value="">All Types</option>
+                {% for type in result_types %}
+                    <option value="{{ type }}" {% if type == current_result_type %}selected{% endif %}>
+                        {% if type == 'false_positive' %}False Positive{% else %}False Negative{% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <a href="{{ url_for('browse') }}" class="btn">Clear Filters</a>
+    </form>
+</div>
+
+<!-- Results -->
+<p><strong>{{ records|length }}</strong> records found</p>
+
+{% if records %}
+    {% for record in records %}
+        <div class="record-card">
+            <h3>
+                <a href="{{ url_for('record_view', record_id=record.id) }}" style="text-decoration: none; color: #2c3e50;">
+                    {{ record.algorithm }} - {{ record.sequence }}
+                </a>
+            </h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 10px;">
+                <div>
+                    <strong>Type:</strong> 
+                    <span class="{% if record.result_type == 'false_positive' %}btn-warning{% else %}btn-danger{% endif %}" style="padding: 2px 8px; border-radius: 3px; font-size: 0.8em;">
+                        {% if record.result_type == 'false_positive' %}False Positive{% else %}False Negative{% endif %}
+                    </span>
+                </div>
+                <div><strong>HLA Allele:</strong> {{ record.allele }}</div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 10px;">
+                <div><strong>Expected:</strong> {{ record.expected_result }}</div>
+                <div><strong>Actual:</strong> {{ record.actual_result }}</div>
+            </div>
+            
+            {% if record.description %}
+                <div style="margin-bottom: 10px;">
+                    <strong>Description:</strong> {{ record.description[:150] }}{% if record.description|length > 150 %}...{% endif %}
+                </div>
+            {% endif %}
+            
+            <div style="font-size: 0.9em; color: #666;">
+                Submitted: {{ record.submitted[:10] }}
+                {% if record.approved %}
+                    | Approved: {{ record.approved[:10] }}
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div style="text-align: center; padding: 40px; background-color: #f8f9fa; border-radius: 5px;">
+        <h3>No records found</h3>
+        <p>Try adjusting your search criteria or <a href="{{ url_for('signup') }}">submit a new record</a>.</p>
+    </div>
+{% endif %}
+{% endblock %}

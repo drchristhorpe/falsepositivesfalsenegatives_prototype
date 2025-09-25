@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Home - False Positives/Negatives Database{% endblock %}
+
+{% block content %}
+<div class="stats">
+    <h2>{{ approved_count }}</h2>
+    <p>Approved Records in Database</p>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div>
+        <h2>About This Database</h2>
+        <p>This database collects and validates reports of false positives and false negatives from algorithmic predictions, particularly focusing on tools like NetMHCPan and other bioinformatics algorithms.</p>
+        
+        <h3>How It Works</h3>
+        <ol>
+            <li><strong>Sign Up:</strong> Register with your email and institution</li>
+            <li><strong>Verify:</strong> Receive and enter your verification code</li>
+            <li><strong>Submit:</strong> Report false predictions with detailed information</li>
+            <li><strong>Review:</strong> Our team reviews submissions for accuracy</li>
+            <li><strong>Publish:</strong> Approved records become publicly searchable</li>
+        </ol>
+    </div>
+    
+    <div>
+        <h2>Get Started</h2>
+        {% if not session.user %}
+            <p>Ready to contribute to the database? Sign up to submit your own false positive or false negative reports.</p>
+            <a href="{{ url_for('signup') }}" class="btn btn-primary">Sign Up to Submit Records</a>
+        {% else %}
+            <p>Welcome back! You can submit new records or browse existing ones.</p>
+            <a href="{{ url_for('submit') }}" class="btn btn-success">Submit New Record</a>
+        {% endif %}
+        
+        <br><br>
+        <p>Or browse existing approved records:</p>
+        <a href="{{ url_for('browse') }}" class="btn btn-primary">Browse Records</a>
+        
+        <h3>Recent Activity</h3>
+        <p>The database is actively growing with contributions from researchers worldwide. Each submission is carefully reviewed to ensure accuracy and relevance.</p>
+    </div>
+</div>
+{% endblock %}

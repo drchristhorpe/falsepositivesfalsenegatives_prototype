@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Record - False Positives/Negatives Database{% endblock %}
+
+{% block content %}
+<h2>Submit New Record</h2>
+<p>Report a false positive or false negative prediction. All submissions will be reviewed before publication.</p>
+
+<form method="POST">
+    <div class="form-group">
+        <label for="algorithm">Algorithm *</label>
+        <select id="algorithm" name="algorithm" required>
+            <option value="">Select Algorithm</option>
+            <option value="NetMHCPan">NetMHCPan</option>
+            <option value="NetMHC">NetMHC</option>
+            <option value="HLAthena">HLAthena</option>
+            <option value="IEDB">IEDB</option>
+            <option value="Other">Other</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="result_type">Type of Error *</label>
+        <select id="result_type" name="result_type" required>
+            <option value="">Select Error Type</option>
+            <option value="false_positive">False Positive (predicted binding, but doesn't bind)</option>
+            <option value="false_negative">False Negative (predicted non-binding, but does bind)</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="sequence">Peptide Sequence *</label>
+        <input type="text" id="sequence" name="sequence" required placeholder="e.g., SIINFEKL" style="font-family: monospace;">
+    </div>
+    
+    <div class="form-group">
+        <label for="allele">HLA Allele *</label>
+        <input type="text" id="allele" name="allele" required placeholder="e.g., HLA-A*02:01">
+    </div>
+    
+    <div class="form-group">
+        <label for="expected_result">Expected Result *</label>
+        <input type="text" id="expected_result" name="expected_result" required placeholder="What should the algorithm have predicted?">
+    </div>
+    
+    <div class="form-group">
+        <label for="actual_result">Actual Algorithm Result *</label>
+        <input type="text" id="actual_result" name="actual_result" required placeholder="What did the algorithm actually predict?">
+    </div>
+    
+    <div class="form-group">
+        <label for="description">Description/Evidence</label>
+        <textarea id="description" name="description" placeholder="Provide additional context, experimental evidence, references, etc."></textarea>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Submit Record</button>
+</form>
+
+<div style="margin-top: 30px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
+    <strong>Note:</strong> All submissions will be reviewed by our team before being made publicly available. 
+    You'll receive notifications about the status of your submission.
+</div>
+{% endblock %}
